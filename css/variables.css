@@ -1,0 +1,125 @@
+/* RC GEN PRO v8.1 - NASA DESIGN TOKENS
+    Phase 2: The Visual DNA (Light Mode Default)
+    Style: High Contrast, Engineering Precision, Zero Radius
+*/
+
+:root {
+    /* =========================================
+       1. LABORATORY COLOR PALETTE (Default Light)
+       ========================================= */
+    
+    /* Backgrounds (Clean Paper) */
+    --bg-body: #F4F4F5;        /* Soft Lab Grey */
+    --bg-surface: #FFFFFF;     /* Pure White Sheets */
+    --bg-sidebar: #E4E4E7;     /* Light Metal Sidebar */
+    --bg-input: #FFFFFF;       /* Input Fields */
+    --bg-hover: #F3F4F6;       /* Interaction State */
+    --bg-active: #E5E7EB;      /* Active State */
+    --bg-modal: rgba(255, 255, 255, 0.95); /* Frosted Glass */
+
+    /* Typography (High Vis Ink) */
+    --text-primary: #09090B;   /* Deep Black */
+    --text-secondary: #52525B; /* Technical Grey */
+    --text-tertiary: #A1A1AA;  /* Muted */
+    --text-inverse: #FFFFFF;   /* White on Black */
+
+    /* Engineering Accents (NASA Blue) */
+    --primary: #2563EB;        /* Action Blue */
+    --primary-hover: #1D4ED8;
+    --primary-dim: rgba(37, 99, 235, 0.1); 
+    
+    --border-color: #D4D4D8;   /* Structural Lines */
+    --border-focus: #2563EB;   /* Active Input Border */
+
+    /* Status Indicators (Traffic Light Logic) */
+    --success: #059669;        /* Success Green */
+    --success-bg: rgba(5, 150, 105, 0.1);
+    
+    --warning: #D97706;        /* Warning Orange */
+    --warning-bg: rgba(217, 119, 6, 0.1);
+    
+    --danger: #DC2626;         /* Critical Red */
+    --danger-bg: rgba(220, 38, 38, 0.1);
+    
+    --info: #0891B2;           /* Info Cyan */
+    --info-bg: rgba(8, 145, 178, 0.1);
+
+    /* =========================================
+       2. PRECISION DIMENSIONS
+       ========================================= */
+    --sidebar-width: 64px;
+    --header-height: 56px;
+    
+    /* THE GOLDEN RULE: ZERO RADIUS */
+    --radius: 0px;             
+    
+    /* Spacing System */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    
+    /* =========================================
+       3. TYPOGRAPHY (Technical Stack)
+       ========================================= */
+    --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-tech: 'Share Tech Mono', 'Courier New', monospace;
+    --font-data: 'JetBrains Mono', 'Consolas', monospace;
+    --font-print: 'Playfair Display', serif;
+    
+    /* =========================================
+       4. DEPTH & SHADOWS
+       ========================================= */
+    /* Light Mode: Subtle Physical Shadows */
+    --shadow-card: 0 1px 2px rgba(0,0,0,0.06), 0 0 0 1px #E4E4E7;
+    --shadow-glow: 0 0 0 2px var(--primary); /* Focus Ring style */
+    
+    /* Transitions (Mechanical Snap) */
+    --ease: cubic-bezier(0.25, 1, 0.5, 1); 
+    --duration: 150ms;
+    
+    /* =========================================
+       5. Z-INDEX LAYERS
+       ========================================= */
+    --z-back: -1;
+    --z-base: 1;
+    --z-sticky: 50;
+    --z-header: 100;
+    --z-sidebar: 200;
+    --z-modal: 999;
+    --z-toast: 1000;
+    --z-tooltip: 1100;
+}
+
+/* =========================================
+   DARK MODE OVERRIDES (Deep Space Theme)
+   High Contrast OLED Black
+   ========================================= */
+[data-theme="dark"] {
+    --bg-body: #050505;
+    --bg-surface: #121212;
+    --bg-sidebar: #000000;
+    --bg-input: #0A0A0A;
+    --bg-hover: #1F1F1F;
+    --bg-active: #2A2A2A;
+    --bg-modal: rgba(0, 0, 0, 0.85);
+
+    --text-primary: #FFFFFF;
+    --text-secondary: #A1A1AA;
+    --text-tertiary: #52525B;
+    --text-inverse: #000000;
+
+    --border-color: #333333;
+    
+    /* Dark Mode: Neon Glows instead of Shadows */
+    --shadow-card: 0 0 0 1px var(--border-color);
+    --shadow-glow: 0 0 15px rgba(59, 130, 246, 0.4);
+
+    /* Brighter Accents for Dark Background */
+    --primary: #3B82F6;
+    --primary-hover: #2563EB;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --info: #06B6D4;
+}

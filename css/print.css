@@ -1,0 +1,338 @@
+/* RC GEN PRO v8.1 - PRINT ENGINE
+   Phase 3: Template Studio "Heart Transplant"
+   Logic: Top-Bar Controls, Premium Skins, Dynamic A4 Rendering
+*/
+
+/* =========================================
+   1. STUDIO LAYOUT (Screen Mode)
+   ========================================= */
+.print-studio-layout {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px); /* Fill remaining space */
+    background: #525659; /* Standard Grey Background */
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+/* NEW: Horizontal Top Toolbar */
+.print-toolbar-top {
+    height: 60px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    flex-shrink: 0;
+    z-index: 10;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.pt-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.pt-group label {
+    font-family: var(--font-tech);
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.pt-group select.compact {
+    height: 32px;
+    font-size: 13px;
+    padding: 0 30px 0 10px;
+    min-width: 150px;
+}
+
+.pt-group.toggles {
+    border-left: 1px solid var(--border-color);
+    padding-left: 20px;
+    margin-left: 10px;
+}
+
+.pt-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.chk-label {
+    cursor: pointer;
+    user-select: none;
+}
+
+.chk-label input {
+    margin-right: 5px;
+    accent-color: var(--primary);
+}
+
+/* Preview Area */
+.print-preview-area {
+    flex: 1;
+    overflow: auto;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Start from top */
+}
+
+#print-preview-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 100%;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+#print-preview-container .report-sheet {
+    flex-shrink: 0;
+}
+
+/* =========================================
+   2. THE DIGITAL A4 SHEET (Base)
+   ========================================= */
+.report-sheet {
+    width: 210mm;
+    min-height: 297mm; /* A4 Height */
+    background: white;
+    padding: 15mm; /* Standard Margin */
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3); /* Lifted Effect */
+    position: relative;
+    color: #000;
+    box-sizing: border-box;
+    transform-origin: top center;
+    /* Typography defaults */
+    font-family: 'Inter', sans-serif;
+}
+
+/* Scale down on smaller screens — no overlap: use gap, avoid negative margins */
+@media (max-width: 1200px) {
+    .report-sheet { transform: scale(0.85); }
+    #print-preview-container { gap: 24px !important; }
+}
+
+/* Internal Structure */
+.sheet-border-frame {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid transparent; /* Placeholder for themes */
+}
+
+/* Header */
+.sheet-head {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 5mm;
+    padding-bottom: 5mm;
+    border-bottom: 2px solid #000;
+}
+
+.logo-area {
+    width: 25mm; height: 25mm;
+    display: flex; align-items: center; justify-content: center;
+}
+.val-logo { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+.school-text { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.val-school { font-size: 26pt; font-weight: 900; line-height: 1; margin: 0 0 5px 0; text-transform: uppercase; }
+.val-address { font-size: 10pt; color: #444; margin: 0; }
+.val-aff { font-size: 10pt; color: #666; font-weight: 600; }
+
+/* Exam Title */
+.exam-stripe {
+    text-align: center;
+    padding: 2mm 0;
+    margin-bottom: 8mm;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.val-exam { font-size: 16pt; font-weight: 700; text-transform: uppercase; margin: 0; }
+.val-session { font-size: 12pt; font-weight: 500; color: #555; }
+
+/* Student Grid */
+.std-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 15mm;
+    row-gap: 2mm;
+    margin-bottom: 8mm;
+    font-size: 11pt;
+}
+.info-row { display: flex; border-bottom: 1px dotted #ccc; padding-bottom: 1mm; }
+.info-row .lbl { font-weight: 700; width: 35mm; color: #333; }
+.info-row .val { font-weight: 500; color: #000; }
+.info-row.highlight { background: #f0f0f0; padding-left: 5px; border-bottom: 1px solid #999; }
+
+/* Marks Table */
+.marks-table { width: 100%; border-collapse: collapse; margin-bottom: 10mm; font-size: 11pt; }
+.marks-table th, .marks-table td { border: 1px solid #ddd; padding: 3mm 4mm; text-align: center; }
+.marks-table th { background: #f9f9f9; font-weight: 700; text-transform: uppercase; color: #333; }
+.marks-table .text-left { text-align: left; }
+.marks-table .val-grade { font-weight: 700; }
+
+.tf-total, .tf-pct { background: #f0f0f0; font-weight: 700; }
+
+/* Footer */
+.sheet-foot { margin-top: auto; padding-top: 10mm; }
+
+.remarks-box {
+    border: 1px solid #ccc;
+    background: #fafafa;
+    padding: 4mm;
+    min-height: 15mm;
+    margin-bottom: 20mm;
+    font-size: 11pt;
+}
+
+.sig-area { display: flex; justify-content: space-between; padding: 0 5mm; }
+.sig-box {
+    border-top: 1px solid #000;
+    width: 45mm;
+    text-align: center;
+    padding-top: 2mm;
+    font-size: 10pt;
+    font-weight: 600;
+    color: #444;
+}
+
+/* Meta & Watermark */
+.sheet-meta { position: absolute; font-size: 8pt; font-family: monospace; color: #999; }
+.header-meta { top: 10mm; right: 15mm; }
+.footer-meta { bottom: 10mm; left: 15mm; }
+
+.sheet-watermark {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 70pt;
+    font-weight: 900;
+    color: rgba(0,0,0,0.03);
+    z-index: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    text-transform: uppercase;
+}
+
+/* =========================================
+   3. PREMIUM THEMES (The Upgrade)
+   ========================================= */
+
+/* --- A. MODERN (Silicon Valley) ---
+   Clean, Blue, Sans-Serif, Minimal Borders */
+.theme-modern .sheet-head { border-bottom: 2px solid #2563EB; }
+.theme-modern .val-school { color: #1E3A8A; font-family: 'Inter', sans-serif; letter-spacing: -1px; }
+.theme-modern .exam-stripe { background: #EFF6FF; border-color: #BFDBFE; color: #1E40AF; }
+.theme-modern .marks-table th { background: #DBEAFE; color: #1E3A8A; border-color: #BFDBFE; }
+.theme-modern .marks-table td { border-color: #E5E7EB; }
+.theme-modern .info-row.highlight { background: #EFF6FF; border-bottom-color: #2563EB; }
+.theme-modern .sheet-watermark { color: rgba(37, 99, 235, 0.03); }
+
+/* --- B. CLASSIC (Government Official) ---
+   Times New Roman, Double Borders, Serious Look */
+.theme-classic .sheet-border-frame { border: 3px double #000; padding: 5mm; }
+.theme-classic .val-school { font-family: 'Times New Roman', serif; text-decoration: underline; text-align: center; }
+.theme-classic .sheet-head { flex-direction: column; align-items: center; text-align: center; border-bottom: 1px solid #000; }
+.theme-classic .exam-stripe { border-top: 2px solid #000; border-bottom: 2px solid #000; background: #fff; }
+.theme-classic .marks-table th { background: #fff; border: 2px solid #000; }
+.theme-classic .marks-table td { border: 1px solid #000; }
+.theme-classic .std-info-grid { font-family: 'Times New Roman', serif; }
+
+/* --- C. GOLD (Private Elite) ---
+   Playfair Font, Gold/Bronze Colors, Elegant */
+.theme-gold .sheet-border-frame { border: 1px solid #B45309; padding: 5mm; position: relative; }
+.theme-gold .sheet-border-frame::after {
+    content: ''; position: absolute; top: 2mm; left: 2mm; right: 2mm; bottom: 2mm;
+    border: 1px solid #B45309; pointer-events: none;
+}
+.theme-gold .val-school { font-family: 'Playfair Display', serif; color: #78350F; text-align: center; font-size: 32pt; }
+.theme-gold .sheet-head { border-bottom: none; flex-direction: column; align-items: center; }
+.theme-gold .exam-stripe { background: #FFFBEB; border: 1px solid #B45309; color: #92400E; margin-top: 5mm; }
+.theme-gold .marks-table th { background: #FEF3C7; border-color: #D97706; color: #78350F; font-family: 'Playfair Display', serif; }
+.theme-gold .marks-table td { border-color: #FCD34D; }
+.theme-gold .sheet-watermark { color: rgba(180, 83, 9, 0.05); font-family: 'Playfair Display', serif; }
+
+/* --- D. PREMIUM SLATE (Professional Grey) --- */
+.theme-premium-slate .sheet-border-frame { border: 1px solid #475569; padding: 6mm; background: linear-gradient(180deg, #f8fafc 0%, #fff 100%); }
+.theme-premium-slate .sheet-head { border-bottom: 3px solid #334155; }
+.theme-premium-slate .val-school { color: #1e293b; font-family: 'Inter', sans-serif; font-weight: 800; letter-spacing: -0.5px; }
+.theme-premium-slate .exam-stripe { background: #334155; color: #fff; border: none; padding: 3mm 5mm; }
+.theme-premium-slate .val-exam { color: #fff; }
+.theme-premium-slate .val-session { color: #cbd5e1; }
+.theme-premium-slate .marks-table th { background: #64748b; color: #fff; border-color: #475569; }
+.theme-premium-slate .marks-table td { border-color: #e2e8f0; }
+.theme-premium-slate .info-row.highlight { background: #f1f5f9; border-bottom-color: #64748b; }
+.theme-premium-slate .sheet-watermark { color: rgba(100, 116, 139, 0.06); }
+.theme-premium-slate .tf-total, .theme-premium-slate .tf-pct { background: #e2e8f0; }
+
+/* --- E. PREMIUM EMERALD (Fresh Institutional) --- */
+.theme-premium-emerald .sheet-border-frame { border: 2px solid #059669; padding: 6mm; }
+.theme-premium-emerald .sheet-head { border-bottom: 2px solid #059669; }
+.theme-premium-emerald .val-school { color: #065f46; font-family: 'Inter', sans-serif; font-weight: 800; }
+.theme-premium-emerald .val-address, .theme-premium-emerald .val-aff { color: #047857; }
+.theme-premium-emerald .exam-stripe { background: linear-gradient(90deg, #059669, #10b981); color: #fff; border: none; padding: 3mm 5mm; }
+.theme-premium-emerald .val-exam, .theme-premium-emerald .val-session { color: #fff; }
+.theme-premium-emerald .marks-table th { background: #d1fae5; color: #065f46; border-color: #a7f3d0; }
+.theme-premium-emerald .marks-table td { border-color: #a7f3d0; }
+.theme-premium-emerald .info-row.highlight { background: #ecfdf5; border-bottom-color: #059669; }
+.theme-premium-emerald .sheet-watermark { color: rgba(5, 150, 105, 0.05); }
+.theme-premium-emerald .tf-total, .theme-premium-emerald .tf-pct { background: #d1fae5; }
+
+/* --- F. PREMIUM MIDNIGHT (Dark Formal) --- */
+.theme-premium-midnight .sheet-border-frame { border: 1px solid #1e293b; padding: 6mm; background: #0f172a; color: #e2e8f0; }
+.theme-premium-midnight .sheet-head { border-bottom: 2px solid #3b82f6; }
+.theme-premium-midnight .val-school { color: #f8fafc; font-family: 'Inter', sans-serif; font-weight: 800; }
+.theme-premium-midnight .val-address, .theme-premium-midnight .val-aff { color: #94a3b8; }
+.theme-premium-midnight .exam-stripe { background: #1e3a8a; color: #93c5fd; border: none; padding: 3mm 5mm; }
+.theme-premium-midnight .val-exam { color: #fff; }
+.theme-premium-midnight .val-session { color: #93c5fd; }
+.theme-premium-midnight .std-info-grid .lbl { color: #94a3b8; }
+.theme-premium-midnight .std-info-grid .val { color: #e2e8f0; }
+.theme-premium-midnight .info-row.highlight { background: #1e293b; border-bottom-color: #3b82f6; }
+.theme-premium-midnight .marks-table th { background: #1e3a8a; color: #e2e8f0; border-color: #334155; }
+.theme-premium-midnight .marks-table td { border-color: #334155; color: #e2e8f0; }
+.theme-premium-midnight .sheet-watermark { color: rgba(59, 130, 246, 0.08); }
+.theme-premium-midnight .tf-total, .theme-premium-midnight .tf-pct { background: #1e293b; color: #e2e8f0; }
+.theme-premium-midnight .remarks-box { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+.theme-premium-midnight .sig-box { border-color: #475569; color: #94a3b8; }
+
+/* Annual report table (UT1–Annual) */
+.marks-table-annual { font-size: 10pt; }
+.marks-table-annual th, .marks-table-annual td { padding: 2mm 3mm; }
+
+/* =========================================
+   4. PRINT OUTPUT LOGIC
+   ========================================= */
+@media print {
+    @page { size: A4; margin: 0; }
+    body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    /* Hide Everything Except Report Sheets */
+    .sidebar, .top-bar, .print-toolbar-top, .toast-wrapper, .modal-overlay { display: none !important; }
+    .print-studio-layout { height: auto; border: none; overflow: visible; background: white; }
+    .print-preview-area { padding: 0; display: block; overflow: visible; }
+    .print-preview-container { gap: 0; display: block; }
+
+    /* Force Sheet to Fill Paper */
+    .report-sheet {
+        width: 100%; height: 100vh;
+        margin: 0; padding: 15mm;
+        box-shadow: none; border: none;
+        transform: none !important;
+        page-break-after: always;
+    }
+}

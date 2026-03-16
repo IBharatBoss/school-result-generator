@@ -1,0 +1,459 @@
+/* RC GEN PRO v8.0 - LAYOUT ENGINE
+   Phase 3: Structural Logic & Grid Systems
+   Style: Engineering Precision (No unnecessary padding)
+*/
+
+/* =========================================
+   1. GLOBAL RESET & BASE
+   ========================================= */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    width: 100vw;
+    overflow: hidden; /* App-like feel, no outer scroll */
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased; /* Crisp text */
+}
+
+/* =========================================
+   2. APP SHELL (Flexbox Container)
+   ========================================= */
+.app-layout {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+/* =========================================
+   3. FIXED SIDEBAR (Command Strip)
+   ========================================= */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: var(--z-sidebar);
+    flex-shrink: 0; /* Never shrink */
+    height: 100vh;
+}
+
+/* Logo Box */
+.logo-box {
+    width: 100%;
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Nav Menu */
+.nav-menu {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: var(--space-sm);
+    gap: 4px; /* Tight spacing */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Spacers */
+.spacer-line {
+    width: 40%;
+    height: 1px;
+    background: var(--border-color);
+    margin: 8px 0;
+}
+
+.spacer-flex {
+    flex: 1; /* Pushes settings to bottom */
+}
+
+/* Nav Item (Button) */
+.nav-item {
+    width: 48px;
+    height: 48px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: var(--radius); /* 0px */
+    transition: all var(--duration) var(--ease);
+    position: relative;
+}
+
+.nav-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.nav-item.active {
+    background: var(--bg-active);
+    color: var(--primary);
+    box-shadow: inset 3px 0 0 0 var(--primary); /* Left Indicator Line */
+}
+
+/* =========================================
+   4. SIDEBAR TOOLTIPS (Pure CSS)
+   ========================================= */
+.nav-item[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 12px;
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    padding: 6px 10px;
+    font-size: 11px;
+    font-family: var(--font-tech);
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+    white-space: nowrap;
+    z-index: var(--z-tooltip);
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    opacity: 0;
+    animation: tooltip-slide 0.15s forwards 0.1s; /* Slight delay */
+}
+
+/* Tooltip Arrow */
+.nav-item[data-tooltip]:hover::before {
+    content: '';
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent var(--border-color) transparent transparent;
+    opacity: 0;
+    animation: tooltip-slide 0.15s forwards 0.1s;
+    z-index: var(--z-tooltip);
+}
+
+@keyframes tooltip-slide {
+    to { opacity: 1; transform: translate(0, -50%); }
+}
+
+/* =========================================
+   5. MAIN CONTENT (Workspace)
+   ========================================= */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: var(--bg-body);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Top Bar (Header) */
+.top-bar {
+    height: var(--header-height);
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 var(--space-lg);
+    flex-shrink: 0;
+    z-index: var(--z-header);
+}
+
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.tech-text {
+    font-family: var(--font-tech);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+}
+.status-dot {
+    width: 8px; height: 8px;
+    background: var(--success);
+    border-radius: 50%; /* Only round thing allowed */
+    box-shadow: 0 0 8px var(--success);
+}
+
+.header-controls {
+    display: flex;
+    gap: var(--space-md);
+    align-items: center;
+}
+.user-avatar {
+    width: 32px; height: 32px;
+    background: var(--bg-active);
+    color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-tech);
+    font-weight: 700;
+    font-size: 12px;
+    border: 1px solid var(--border-color);
+}
+
+/* Content Stage (Scrollable Area) */
+.content-stage {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: var(--space-lg);
+    position: relative;
+    scroll-behavior: smooth;
+}
+
+/* View Management */
+.view {
+    display: none;
+    width: 100%;
+    max-width: 1920px; /* Limit ultra-wide */
+    margin: 0 auto;
+    padding-bottom: 40px;
+}
+.view.active { display: block; }
+
+/* =========================================
+   6. DASHBOARD GRID (Bento Layout)
+   ========================================= */
+.grid-dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 120px 450px; /* Fixed heights for tight look */
+    gap: var(--space-md);
+}
+
+/* Card Foundation */
+.card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+.card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+
+.card h3 {
+    font-family: var(--font-tech);
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+/* KPI Cards */
+.kpi-card {
+    grid-column: span 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.kpi-info label {
+    font-family: var(--font-tech);
+    font-size: 11px;
+    color: var(--text-secondary);
+    display: block;
+}
+.kpi-info h2 {
+    font-family: var(--font-tech);
+    font-size: 32px;
+    color: var(--text-primary);
+    margin: 4px 0 0 0;
+    line-height: 1;
+}
+.kpi-icon {
+    font-size: 24px;
+    opacity: 0.8;
+}
+.kpi-icon.blue { color: var(--info); }
+.kpi-icon.green { color: var(--success); }
+.kpi-icon.red { color: var(--danger); }
+.kpi-icon.purple { color: #A855F7; }
+
+/* Chart & Actions */
+.chart-box { 
+    grid-column: span 3; 
+    min-height: 450px;
+}
+.chart-wrapper {
+    flex: 1;
+    width: 100%;
+    position: relative;
+}
+
+.actions-box { 
+    grid-column: span 1; 
+}
+.btn-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    height: 100%;
+}
+
+/* =========================================
+   7. DATA REGISTRY LAYOUT
+   ========================================= */
+.toolbar-panel {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-md);
+    background: var(--bg-surface);
+    padding: var(--space-sm);
+    border: 1px solid var(--border-color);
+    height: 56px;
+    align-items: center;
+}
+
+.search-module {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 12px;
+    width: 350px;
+    color: var(--text-tertiary);
+    border-right: 1px solid var(--border-color);
+    height: 100%;
+}
+.search-input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-family: var(--font-tech);
+    width: 100%;
+    height: 100%;
+    outline: none;
+    font-size: 14px;
+}
+
+.action-module { display: flex; gap: var(--space-sm); align-items: center; padding-right: 8px; }
+.divider-v { width: 1px; height: 24px; background: var(--border-color); margin: 0 4px; }
+
+.grid-wrapper {
+    border: 1px solid var(--border-color);
+    background: var(--bg-surface);
+    height: calc(100vh - 220px); /* Fill remaining space */
+    overflow: auto;
+    position: relative;
+}
+
+/* =========================================
+   8. SETTINGS & PRINT LAYOUTS
+   ========================================= */
+.settings-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-md);
+}
+
+.danger-zone {
+    border: 1px solid var(--danger);
+    background: rgba(239, 68, 68, 0.03);
+}
+
+.print-studio-layout {
+    display: flex;
+    gap: var(--space-md);
+    height: calc(100vh - 140px);
+}
+.print-controls {
+    width: 300px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    overflow-y: auto;
+}
+.print-preview-area {
+    flex: 1;
+    background: #525659; /* Standard Grey for preview contrast */
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    overflow: auto;
+}
+
+/* =========================================
+   9. SCROLLBARS (NASA Style)
+   ========================================= */
+.custom-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.custom-scroll::-webkit-scrollbar-track { background: var(--bg-body); }
+.custom-scroll::-webkit-scrollbar-thumb { 
+    background: var(--border-color); 
+    border: 1px solid var(--bg-body); 
+}
+.custom-scroll::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+/* =========================================
+   10. RESPONSIVE BREAKPOINTS
+   ========================================= */
+@media (max-width: 1200px) {
+    .grid-dashboard { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; }
+    .kpi-card { grid-column: span 1; }
+    .chart-box { grid-column: span 2; min-height: 400px; }
+    .actions-box { grid-column: span 2; }
+    .btn-grid { flex-direction: row; }
+}
+
+@media (max-width: 768px) {
+    .app-layout { flex-direction: column; }
+    .sidebar { 
+        width: 100vw; height: 60px; 
+        flex-direction: row; 
+        border-right: none; 
+        border-bottom: 1px solid var(--border-color);
+    }
+    .nav-menu { flex-direction: row; padding: 0 10px; gap: 0; }
+    .nav-item { width: 14vw; height: 100%; border-radius: 0; box-shadow: none !important; }
+    .nav-item.active { border-bottom: 2px solid var(--primary); background: transparent; }
+    
+    .spacer-line, .spacer-flex, .logo-box { display: none; }
+    
+    .grid-dashboard { grid-template-columns: 1fr; }
+    .kpi-card, .chart-box, .actions-box { grid-column: span 1; }
+    
+    .print-studio-layout { flex-direction: column; }
+    .print-controls { width: 100%; height: auto; }
+    .desktop-only { display: none; }
+}

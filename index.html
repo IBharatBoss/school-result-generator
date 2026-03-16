@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light"> <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="RC Gen Pro v8.1 - Enterprise Student System">
+    
+    <title>RC Gen Pro | v8.1 Enterprise</title>
+
+    <link rel="stylesheet" href="css/variables.css">   <link rel="stylesheet" href="css/layout.css">      <link rel="stylesheet" href="css/components.css">  <link rel="stylesheet" href="css/animations.css">  <link rel="stylesheet" href="css/print.css">       <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+</head>
+<body>
+
+    <div id="toast-wrapper" class="toast-wrapper" aria-live="polite"></div>
+
+    <div class="app-layout">
+
+        <aside class="sidebar" id="main-sidebar">
+            <div class="logo-box">
+                <i class="fas fa-cube"></i>
+            </div>
+            
+            <nav class="nav-menu">
+                <button class="nav-item active" data-view="view-dashboard" data-tooltip="Dashboard">
+                    <i class="fas fa-th-large"></i>
+                </button>
+                <button class="nav-item" data-view="view-analytics" data-tooltip="Analytics AI">
+                    <i class="fas fa-chart-pie"></i>
+                </button>
+                <div class="spacer-line"></div>
+                <button class="nav-item" data-view="view-data" data-tooltip="Data Registry">
+                    <i class="fas fa-database"></i>
+                </button>
+                <button class="nav-item" data-view="view-grading" data-tooltip="Grading Rules">
+                    <i class="fas fa-calculator"></i>
+                </button>
+                <div class="spacer-line"></div>
+                <button class="nav-item" data-view="view-print" data-tooltip="Template Studio">
+                    <i class="fas fa-print"></i>
+                </button>
+                <div class="spacer-flex"></div>
+                <button class="nav-item" data-view="view-settings" data-tooltip="System Config">
+                    <i class="fas fa-cogs"></i>
+                </button>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            
+            <header class="top-bar">
+                <div class="system-status">
+                    <span class="status-dot"></span> 
+                    <span id="system-msg" class="tech-text">SYSTEM READY</span>
+                </div>
+
+                <div class="header-controls">
+                    <button id="header-backup-btn" class="btn btn-outline btn-sm">
+                        <i class="fas fa-cloud-download-alt"></i> <span class="desktop-only">SECURE BACKUP</span>
+                    </button>
+                    <button id="theme-toggle" class="btn-icon" aria-label="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="user-avatar">AD</div>
+                </div>
+            </header>
+
+            <div class="content-stage custom-scroll">
+
+                <section id="view-dashboard" class="view active">
+                    <div class="grid-dashboard">
+                        <div class="card kpi-card">
+                            <div class="kpi-icon blue"><i class="fas fa-users"></i></div>
+                            <div class="kpi-info"><label>Students</label><h2 id="kpi-total">0</h2></div>
+                        </div>
+                        <div class="card kpi-card">
+                            <div class="kpi-icon green"><i class="fas fa-check-circle"></i></div>
+                            <div class="kpi-info"><label>Pass Rate</label><h2 id="kpi-pass-pct" class="text-green">0%</h2></div>
+                        </div>
+                        <div class="card kpi-card">
+                            <div class="kpi-icon red"><i class="fas fa-exclamation-circle"></i></div>
+                            <div class="kpi-info"><label>At Risk</label><h2 id="kpi-fail" class="text-red">0</h2></div>
+                        </div>
+                        <div class="card kpi-card">
+                            <div class="kpi-icon purple"><i class="fas fa-chart-line"></i></div>
+                            <div class="kpi-info"><label>Avg Score</label><h2 id="kpi-avg">0%</h2></div>
+                        </div>
+
+                        <div class="card chart-box">
+                            <div class="card-head">
+                                <h3>Performance Overview</h3>
+                                <div class="live-indicator"><span class="blink"></span> LIVE</div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="mainChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card actions-box">
+                            <h3>Quick Actions</h3>
+                            <div class="btn-grid">
+                                <button id="qa-add" class="btn btn-primary full-width">
+                                    <i class="fas fa-user-plus"></i> Add Student
+                                </button>
+                                <button id="qa-print" class="btn btn-outline full-width">
+                                    <i class="fas fa-print"></i> Batch Print
+                                </button>
+                                <button id="qa-config" class="btn btn-outline full-width">
+                                    <i class="fas fa-cog"></i> Config
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-data" class="view">
+                    <div class="toolbar-panel">
+                        <div class="search-module">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="student-search-input" class="search-input" placeholder="Search by Name or Roll No..." autocomplete="off">
+                        </div>
+                        <div class="action-module">
+                            <button id="btn-add-col" class="btn btn-sm btn-outline"><i class="fas fa-plus"></i> Sub</button>
+                            <button id="btn-rem-col" class="btn btn-sm btn-outline-danger"><i class="fas fa-minus"></i> Sub</button>
+                            <div class="divider-v"></div>
+                            <button id="btn-add-row" class="btn btn-sm btn-primary"><i class="fas fa-user-plus"></i> Add Student</button>
+                        </div>
+                    </div>
+
+                    <div class="grid-wrapper custom-scroll">
+                        <table id="main-grid" class="tech-table">
+                            <thead>
+                                <tr id="grid-header-row"></tr>
+                                <tr id="grid-header-sub-row" class="grid-header-sub" style="display:none;"></tr>
+                            </thead>
+                            <tbody id="grid-body"></tbody>
+                        </table>
+                        
+                        <div id="empty-state" class="empty-state-box">
+                            <div class="empty-content">
+                                <i class="fas fa-database"></i>
+                                <h3>No Data Found</h3>
+                                <p>Initialize the database to get started.</p>
+                                <button id="btn-init-db" class="btn btn-primary">Initialize Database</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-analytics" class="view">
+                    <div class="analytics-layout">
+                        <div class="card full-width">
+                            <div class="card-head"><h3>Top Performers</h3></div>
+                            <div class="table-responsive">
+                                <table class="tech-table" id="table-toppers">
+                                    <thead><tr><th>Rank</th><th>Name</th><th>Score</th><th>Grade</th></tr></thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card full-width">
+                            <div class="card-head"><h3 class="text-red">Needs Attention</h3></div>
+                            <div class="table-responsive">
+                                <table class="tech-table" id="table-risk">
+                                    <thead><tr><th>Roll</th><th>Name</th><th>Issue</th><th>Status</th></tr></thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-settings" class="view">
+                    <div class="settings-grid">
+                        <div class="card">
+                            <h3>Institution Details</h3>
+                            
+                            <div class="form-row">
+                                <label>Max Marks per Subject</label>
+                                <input type="number" id="cfg-max-marks" class="input-tech" placeholder="Default: 100">
+                            </div>
+
+                            <div class="form-row">
+                                <label>Marks Structure</label>
+                                <select id="cfg-marks-structure" class="input-tech">
+                                    <option value="single">Single (Total only)</option>
+                                    <option value="oralWritten">Oral + Written (2-part)</option>
+                                    <option value="oralWrittenPractical">Oral + Written + Practical (3-part)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-row">
+                                <label class="chk-label">
+                                    <input type="checkbox" id="cfg-use-annual"> Use Annual Report (UT1, UT2, UT3, HY, Annual)
+                                </label>
+                            </div>
+
+                            <div class="form-row">
+                                <label>Total Working Days</label>
+                                <input type="number" id="cfg-working-days" class="input-tech" placeholder="Default: 280">
+                            </div>
+
+                            <div class="form-row">
+                                <label>School Name</label>
+                                <input type="text" id="cfg-school" class="input-tech" placeholder="e.g. Shanti Niketan">
+                            </div>
+
+                            <div class="form-row">
+                                <label>Address</label>
+                                <input type="text" id="cfg-address" class="input-tech" placeholder="e.g. Balotra">
+                            </div>
+
+                            <div class="form-row">
+                                <label>Affiliation ID</label>
+                                <input type="text" id="cfg-affiliation" class="input-tech" placeholder="e.g. RBSE-1999">
+                            </div>
+                            
+                            <div class="form-row">
+                                <label>Logo URL</label>
+                                <input type="text" id="cfg-logo" class="input-tech" placeholder="Image URL">
+                            </div>
+                        </div>
+
+                        <div class="card danger-zone">
+                            <h3>Data Management</h3>
+                            <button id="btn-export" class="btn btn-outline full-width margin-bottom">
+                                <i class="fas fa-file-export"></i> Export JSON
+                            </button>
+                            <button id="btn-import-trigger" class="btn btn-outline full-width margin-bottom">
+                                <i class="fas fa-file-import"></i> Import JSON
+                            </button>
+                            <hr class="tech-hr">
+                            <button id="btn-reset" class="btn btn-danger full-width">
+                                <i class="fas fa-trash"></i> Factory Reset
+                            </button>
+                            <input type="file" id="file-import" hidden accept=".json">
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-grading" class="view">
+                    <div class="card full-height">
+                        <div class="card-head">
+                            <h3>Grading Logic</h3>
+                            <button id="btn-add-rule" class="btn btn-sm btn-primary">+ Add Rule</button>
+                        </div>
+                        <table class="tech-table" id="table-grading">
+                            <thead><tr><th>Min %</th><th>Max %</th><th>Grade</th><th>Remarks</th><th>Action</th></tr></thead>
+                            <tbody id="grading-body"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="view-print" class="view">
+                    <div class="print-studio-layout">
+                        
+                        <div class="print-toolbar-top">
+                            <div class="pt-group">
+                                <label><i class="fas fa-palette"></i> Theme</label>
+                                <select id="sel-print-theme" class="input-tech compact">
+                                    <option value="modern">Modern Clean</option>
+                                    <option value="classic">Classic Official</option>
+                                    <option value="gold">Royal Gold</option>
+                                    <option value="premium-slate">Premium Slate</option>
+                                    <option value="premium-emerald">Premium Emerald</option>
+                                    <option value="premium-midnight">Premium Midnight</option>
+                                </select>
+                            </div>
+                            
+                            <div class="pt-group toggles">
+                                <label class="chk-label"><input type="checkbox" id="chk-watermark" checked> Watermark</label>
+                                <label class="chk-label"><input type="checkbox" id="chk-page-no" checked> Page No</label>
+                                <label class="chk-label"><input type="checkbox" id="chk-timestamp" checked> Time</label>
+                            </div>
+
+                            <div class="pt-actions">
+                                <button id="btn-download-pdf" class="btn btn-outline">
+                                    <i class="fas fa-file-pdf"></i> Download PDF (All)
+                                </button>
+                                <button onclick="window.print()" class="btn btn-primary">
+                                    <i class="fas fa-print"></i> Print Batch
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="print-preview-area custom-scroll">
+                            <div id="print-preview-container" class="paper-canvas">
+                                </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div> </main>
+    </div>
+
+    <template id="tpl-report-card">
+        <article class="report-sheet">
+            <div class="sheet-watermark">CONFIDENTIAL</div>
+            <div class="sheet-meta header-meta">Page <span class="val-page"></span></div>
+            
+            <div class="sheet-border-frame">
+                <header class="sheet-head">
+                    <div class="logo-area">
+                        <img src="" class="val-logo" alt="Logo" onerror="this.style.display='none'">
+                    </div>
+                    <div class="school-text">
+                        <h1 class="val-school">SCHOOL NAME</h1>
+                        <p class="val-address">Address</p>
+                        <p class="val-aff">Affiliation</p>
+                    </div>
+                </header>
+
+                <div class="exam-stripe">
+                    <h2 class="val-exam">ANNUAL EXAMINATION</h2>
+                    <span class="val-session">202X-2X</span>
+                </div>
+
+                <div class="std-info-grid">
+                    <div class="info-row"><span class="lbl">Roll No:</span> <span class="val val-roll"></span></div>
+                    <div class="info-row"><span class="lbl">Name:</span> <span class="val val-name"></span></div>
+                    <div class="info-row"><span class="lbl">Father:</span> <span class="val val-father"></span></div>
+                    <div class="info-row"><span class="lbl">Attendance:</span> <span class="val val-att"></span></div>
+                    <div class="info-row highlight"><span class="lbl">Rank:</span> <span class="val val-rank"></span></div>
+                </div>
+
+                <table class="marks-table marks-table-dynamic">
+                    <thead>
+                        <tr class="marks-thead-row">
+                            <th class="text-left">Subject</th>
+                            <th>Max Marks</th>
+                            <th class="val-marks-cols">Obtained</th>
+                            <th>Grade</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody class="val-tbody"></tbody>
+                    <tfoot>
+                        <tr class="tf-total">
+                            <td colspan="2">Grand Total</td>
+                            <td class="val-total"></td>
+                            <td class="val-grade"></td>
+                            <td class="val-rem"></td>
+                        </tr>
+                        <tr class="tf-pct">
+                            <td colspan="2">Percentage</td>
+                            <td colspan="3" class="val-pct"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <footer class="sheet-foot">
+                    <div class="remarks-box">
+                        <strong>Remarks:</strong> <span class="val-overall-rem"></span>
+                    </div>
+                    <div class="sig-area">
+                        <div class="sig-box">Class Teacher</div>
+                        <div class="sig-box">Principal</div>
+                        <div class="sig-box">Guardian</div>
+                    </div>
+                </footer>
+            </div>
+            <div class="sheet-meta footer-meta val-time"></div>
+        </article>
+    </template>
+
+    <template id="tpl-report-annual">
+        <article class="report-sheet report-sheet-annual">
+            <div class="sheet-watermark">CONFIDENTIAL</div>
+            <div class="sheet-meta header-meta">Page <span class="val-page"></span></div>
+            <div class="sheet-border-frame">
+                <header class="sheet-head">
+                    <div class="logo-area"><img src="" class="val-logo" alt="Logo" onerror="this.style.display='none'"></div>
+                    <div class="school-text">
+                        <h1 class="val-school">SCHOOL NAME</h1>
+                        <p class="val-address">Address</p>
+                        <p class="val-aff">Affiliation</p>
+                    </div>
+                </header>
+                <div class="exam-stripe">
+                    <h2 class="val-exam">ANNUAL REPORT CARD</h2>
+                    <span class="val-session">202X-2X</span>
+                </div>
+                <div class="std-info-grid">
+                    <div class="info-row"><span class="lbl">Roll No:</span> <span class="val val-roll"></span></div>
+                    <div class="info-row"><span class="lbl">Name:</span> <span class="val val-name"></span></div>
+                    <div class="info-row"><span class="lbl">Father:</span> <span class="val val-father"></span></div>
+                    <div class="info-row"><span class="lbl">Attendance:</span> <span class="val val-att"></span></div>
+                    <div class="info-row highlight"><span class="lbl">Rank:</span> <span class="val val-rank"></span></div>
+                </div>
+                <table class="marks-table marks-table-annual">
+                    <thead><tr class="marks-annual-head"><th class="text-left">Subject</th><th>UT1</th><th>UT2</th><th>UT3</th><th>Half-Yearly</th><th>Annual</th><th>Grade</th><th>Result</th></tr></thead>
+                    <tbody class="val-tbody-annual"></tbody>
+                    <tfoot>
+                        <tr class="tf-total"><td>Grand Total</td><td class="val-ut1-tot"></td><td class="val-ut2-tot"></td><td class="val-ut3-tot"></td><td class="val-hy-tot"></td><td class="val-an-tot"></td><td class="val-grade"></td><td class="val-rem"></td></tr>
+                        <tr class="tf-pct"><td>Percentage</td><td colspan="7" class="val-pct"></td></tr>
+                    </tfoot>
+                </table>
+                <footer class="sheet-foot">
+                    <div class="remarks-box"><strong>Remarks:</strong> <span class="val-overall-rem"></span></div>
+                    <div class="sig-area"><div class="sig-box">Class Teacher</div><div class="sig-box">Principal</div><div class="sig-box">Guardian</div></div>
+                </footer>
+            </div>
+            <div class="sheet-meta footer-meta val-time"></div>
+        </article>
+    </template>
+
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-box">
+            <h3 id="modal-title">Confirm Action</h3>
+            <p id="modal-msg">Are you sure?</p>
+            <div class="modal-btns">
+                <button class="btn btn-outline" id="modal-cancel">Cancel</button>
+                <button class="btn btn-primary" id="modal-confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/state.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>

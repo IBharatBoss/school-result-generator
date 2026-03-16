@@ -1,0 +1,189 @@
+/* RC GEN PRO v8.0 - MOTION ENGINE
+   Phase 5: Mechanical & Snappy Transitions (NASA Style)
+   Logic: Fast attack, no bounce, pure precision.
+*/
+
+/* =========================================
+   1. VIEW TRANSITIONS (Tab Switching)
+   ========================================= */
+.view {
+    /* Base state handled in layout.css */
+    transform-origin: center top;
+    opacity: 0;
+    /* Hidden state */
+}
+
+.view.active {
+    opacity: 1;
+    /* Snappy Entrance: Fast slide up with rigid stop */
+    animation: mech-slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes mech-slide-up {
+    0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.99);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* =========================================
+   2. INTERACTIVE ELEMENTS (Hover/Focus)
+   ========================================= */
+/* Card Hover: Neon Activation */
+.card {
+    transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease), border-color 0.15s var(--ease);
+}
+
+.card:hover {
+    transform: translateY(-1px); /* Very subtle lift */
+    box-shadow: var(--shadow-glow); /* Neon Glow */
+    border-color: var(--primary);
+    z-index: 5;
+}
+
+/* KPI Hover: Text Highlight */
+.kpi-card:hover h2 {
+    color: var(--primary);
+    text-shadow: 0 0 8px var(--primary-dim);
+    transition: all 0.2s;
+}
+
+/* Button Press: Mechanical Click */
+.btn:active {
+    transform: translateY(1px);
+}
+
+/* Button Shine Effect (Sci-Fi Scan) */
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -150%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.3s;
+}
+
+.btn:hover::after {
+    left: 150%; /* Fast sweep across */
+    transition: left 0.4s ease-in-out;
+}
+
+/* =========================================
+   3. DATA GRID INTERACTIONS
+   ========================================= */
+/* Row Scan Highlight */
+.tech-table tr {
+    transition: background-color 0.1s;
+}
+.tech-table tr:hover {
+    background-color: rgba(59, 130, 246, 0.05); /* Subtle Blue Tint */
+}
+
+/* Input Focus Expansion */
+.cell-input:focus {
+    position: relative;
+    z-index: 2;
+    background: var(--bg-surface);
+}
+
+/* =========================================
+   4. MODAL ANIMATIONS (Rigid Scale)
+   ========================================= */
+.modal-overlay {
+    backdrop-filter: blur(0px);
+    transition: backdrop-filter 0.2s, opacity 0.2s;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-overlay.active {
+    backdrop-filter: blur(4px);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-box {
+    transform: scale(0.95);
+    opacity: 0;
+    transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s;
+}
+
+.modal-overlay.active .modal-box {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* =========================================
+   5. TOAST NOTIFICATIONS (Slide Down)
+   ========================================= */
+.toast {
+    animation: toast-entry 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes toast-entry {
+    0% { transform: translateY(-20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.toast.hiding {
+    animation: toast-exit 0.2s ease forwards;
+}
+
+@keyframes toast-exit {
+    to { transform: translateY(-10px); opacity: 0; }
+}
+
+/* =========================================
+   6. UTILITY ANIMATIONS
+   ========================================= */
+/* System Status Pulse (The Green Dot) */
+.status-dot {
+    animation: status-pulse 2s infinite;
+}
+
+@keyframes status-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Loading Spinner (Tech Rotation) */
+@keyframes spin-tech {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.loading-spin {
+    animation: spin-tech 1s linear infinite;
+}
+
+/* Live Indicator Blink */
+@keyframes blinker {
+    50% { opacity: 0.3; }
+}
+.blink {
+    animation: blinker 1s step-end infinite;
+}
+
+/* Skeleton Loading (Data Fetch Simulation) */
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.skeleton-load {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-hover);
+}
+.skeleton-load::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    animation: shimmer 1.5s infinite;
+}
